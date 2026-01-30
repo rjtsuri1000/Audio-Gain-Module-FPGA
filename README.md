@@ -37,20 +37,20 @@ It exists to demonstrate **how a gain stage is implemented in hardware**, not to
 ## Architecture
 
 High-level structure:
-
+```
 AXI-Stream In (Stereo)
 |
 v
 +----------------------+
-| Gain Core |
+| Gain Core          |
 | - Fixed-point mult |
-| - Scaling (Q4.12) |
-| - Saturation |
+| - Scaling (Q4.12)  |
+| - Saturation       |
 +----------------------+
 |
 v
 AXI-Stream Out (Stereo)
-
+```
 
 Design notes:
 
