@@ -60,7 +60,7 @@ module gain_core #(
 
     always @(posedge clk or negedge rst_n) begin
         if (!rst_n) begin
-            data_o <= '0;
+            data_o <= 0;
         end else if (ce) begin
             if (!en) begin
                 // Bypass mode
