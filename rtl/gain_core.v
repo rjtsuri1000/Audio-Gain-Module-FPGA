@@ -37,6 +37,9 @@ module gain_core #(
     // Raw multiplication result (wider than input)
     wire signed [DWIDTH+GWIDTH-1:0] mult_raw;
 
+    // Convergen rounding after raw multiplication
+    wire signed [DWIDTH+GWIDTH-1:0] mult_rounded;
+    
     // Scaled result after removing fractional bits
     wire signed [DWIDTH+GWIDTH-1-FBITS:0] mult_scaled;
 
@@ -51,8 +54,11 @@ module gain_core #(
     // Signed multiplication
     assign mult_raw = data_i * data_gain;
 
+    // (1 << (FBITS-1)) as representation of 0.5 in fixed-point data format
+    assign mult_rounded = mult_raw + (1 << (FBITS-1));
+    
     // Arithmetic right shift to restore scale
-    assign mult_scaled = mult_raw >>> FBITS;
+    assign mult_scaled = mult_rounded >>> FBITS;
 
     // ------------------------------------------------------------
     // Sequential logic
